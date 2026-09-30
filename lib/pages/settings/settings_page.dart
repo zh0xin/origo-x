@@ -16,18 +16,22 @@ import 'package:xxread/main.dart';
 import 'package:xxread/pages/book_sources/book_source_management_page.dart';
 import 'package:xxread/pages/home/home_mobile_chrome.dart';
 import 'package:xxread/pages/home/home_shell_page.dart';
+import 'package:xxread/pages/opds/opds_catalog_list_page.dart';
 import 'package:xxread/pages/settings/about/changelog_page.dart';
 import 'package:xxread/pages/settings/about/open_source_licenses_page.dart';
 import 'package:xxread/pages/settings/ai_settings_page.dart';
 import 'package:xxread/pages/settings/cache_management_page.dart';
 import 'package:xxread/pages/settings/floating_navigation_settings_page.dart';
 import 'package:xxread/pages/settings/library_layout_settings_page.dart';
+import 'package:xxread/pages/settings/sync/koreader_sync_page.dart';
 import 'package:xxread/pages/settings/sync/webdav_sync_page.dart';
 import 'package:xxread/reader_core/ai/ai_service.dart';
 import 'package:xxread/services/core/core_services.dart';
 import 'package:xxread/services/core/online_font_models.dart';
 import 'package:xxread/services/reading/reading_resume_service.dart';
 import 'package:xxread/services/sync/sync_models.dart';
+import 'package:xxread/services/sync/koreader/koreader_models.dart';
+import 'package:xxread/services/sync/koreader/koreader_sync_controller.dart';
 import 'package:xxread/services/sync/webdav_sync_controller.dart';
 import 'package:xxread/utils/app_themes.dart';
 import 'package:xxread/utils/app_themes_translator.dart';
@@ -464,6 +468,7 @@ class _SettingsPageState extends State<SettingsPage> {
   ) {
     final l10n = context.l10n;
     final webDavSync = Provider.of<WebDavSyncController>(context);
+    final koreaderSync = Provider.of<KoreaderSyncController>(context);
     final useRailNavigation =
         NavigationContext.of(context)?.useRailNavigation ?? false;
     final mobileChrome = HomeMobileChromeScope.of(context);
@@ -574,6 +579,28 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 icon: Icons.cloud_outlined,
                 trailing: _webDavSyncTrailing(webDavSync),
+              ),
+              _buildActionSetting(
+                title: l10n.koreaderSyncTitle,
+                badge: l10n.koreaderSyncBetaBadge,
+                subtitle: _koreaderSyncSubtitle(koreaderSync),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const KoreaderSyncPage(),
+                  ),
+                ),
+                icon: Icons.sync_outlined,
+                trailing: _koreaderSyncTrailing(koreaderSync),
+              ),
+              _buildActionSetting(
+                title: l10n.opdsCatalogsTitle,
+                subtitle: l10n.opdsCatalogsSubtitle,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const OpdsCatalogListPage(),
+                  ),
+                ),
+                icon: Icons.travel_explore_outlined,
               ),
               _buildActionSetting(
                 title: l10n.settingsCacheManagementTitle,
@@ -697,6 +724,44 @@ class _SettingsPageState extends State<SettingsPage> {
     }
     if (sync.status == WebDavSyncStatus.failed ||
         sync.status == WebDavSyncStatus.partialFailure) {
+      return Icon(
+        Icons.error_outline_rounded,
+        color: Theme.of(context).colorScheme.error,
+      );
+    }
+    return const Icon(Icons.chevron_right_rounded);
+  }
+
+  String _koreaderSyncSubtitle(KoreaderSyncController sync) {
+    final l10n = context.l10n;
+    if (!sync.isConfigured) return l10n.koreaderSyncConfigureSubtitle;
+    if (sync.busy || sync.status == KoreaderSyncStatus.testing) {
+      return l10n.koreaderSyncSyncing;
+    }
+    if (sync.status == KoreaderSyncStatus.failed) {
+      return l10n.koreaderSyncFailed;
+    }
+    if (sync.status == KoreaderSyncStatus.partialFailure) {
+      return l10n.koreaderSyncFailed;
+    }
+    final lastSuccess = sync.lastSuccessfulSync;
+    if (lastSuccess == null) return l10n.koreaderSyncNeverSynced;
+    final local = lastSuccess.toLocal();
+    final material = MaterialLocalizations.of(context);
+    final date = material.formatShortDate(local);
+    final time = material.formatTimeOfDay(TimeOfDay.fromDateTime(local));
+    return l10n.koreaderSyncLastSync('$date $time');
+  }
+
+  Widget _koreaderSyncTrailing(KoreaderSyncController sync) {
+    if (sync.busy || sync.status == KoreaderSyncStatus.testing) {
+      return const SizedBox.square(
+        dimension: 20,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    }
+    if (sync.status == KoreaderSyncStatus.failed ||
+        sync.status == KoreaderSyncStatus.partialFailure) {
       return Icon(
         Icons.error_outline_rounded,
         color: Theme.of(context).colorScheme.error,

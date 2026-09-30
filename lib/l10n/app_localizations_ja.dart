@@ -4268,4 +4268,219 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get readerNoAnnotationsHint =>
       '文章を選択してハイライトやコメントを追加できます。下線付きのコメントをタップすると内容を確認できます。';
+
+  @override
+  String get koreaderSyncTitle => 'KOReader 進度同期';
+
+  @override
+  String get koreaderSyncSubtitle => 'KOReader 端末と読書進度を同期';
+
+  @override
+  String get koreaderSyncBetaBadge => 'ベータ';
+
+  @override
+  String get koreaderSyncNotConfigured => '未設定';
+
+  @override
+  String get koreaderSyncConfigureSubtitle => 'KOReader 同期サーバーを設定';
+
+  @override
+  String get koreaderSyncSetUp => '設定';
+
+  @override
+  String get koreaderSyncNow => '今すぐ同期';
+
+  @override
+  String get koreaderSyncSyncing => '同期中…';
+
+  @override
+  String get koreaderSyncConnected => '接続済み';
+
+  @override
+  String get koreaderSyncFailed => '同期に失敗しました';
+
+  @override
+  String koreaderSyncLastSync(String time) {
+    return '前回の同期: $time';
+  }
+
+  @override
+  String get koreaderSyncNeverSynced => '未同期';
+
+  @override
+  String koreaderSyncPushedPulled(int pushed, int pulled) {
+    return '送信 $pushed、受信 $pulled';
+  }
+
+  @override
+  String get koreaderServerUrl => '同期サーバー';
+
+  @override
+  String get koreaderServerUrlHint => 'https://sync.koreader.rocks';
+
+  @override
+  String get koreaderUsername => 'ユーザー名';
+
+  @override
+  String get koreaderPassword => 'パスワード';
+
+  @override
+  String get koreaderPasswordHint => 'サーバーに送信されるのはパスワードのハッシュのみです';
+
+  @override
+  String get koreaderChecksumMode => '書籍の照合方法';
+
+  @override
+  String get koreaderChecksumPartialMd5 => 'ファイル内容（推奨）';
+
+  @override
+  String get koreaderChecksumFilename => 'ファイル名';
+
+  @override
+  String get koreaderChecksumHint =>
+      'お使いの KOReader の設定と一致させる必要があります。そうしないとアプリ間で進度が合いません';
+
+  @override
+  String get koreaderAllowPrivateHttp => 'プライベート / LAN の HTTP サーバーを許可';
+
+  @override
+  String get koreaderAllowPrivateHttpHint => '信頼するローカルネットワークの自前サーバーのみ';
+
+  @override
+  String get koreaderTestConnection => '接続テスト';
+
+  @override
+  String get koreaderTestSuccess => '接続に成功しました';
+
+  @override
+  String get koreaderRegisterAccount => '新規アカウント登録';
+
+  @override
+  String get koreaderRegisterDescription => '同期サーバーにアカウントを作成';
+
+  @override
+  String get koreaderRegisterSuccess => 'アカウントを登録しました';
+
+  @override
+  String get koreaderRegisterUsernameTaken => 'そのユーザー名は既に使用されています';
+
+  @override
+  String get koreaderSyncOnOpen => '開く時に受信';
+
+  @override
+  String get koreaderSyncOnSave => '保存時に送信';
+
+  @override
+  String get koreaderPreferLocalFirstSync => '初回同期時にローカル位置を優先';
+
+  @override
+  String get koreaderFidelityNote =>
+      '進度はパーセンテージで同期します。本アプリと KOReader では位置の計測方法が異なるため、同期後の位置はおおよそ正しい場所（通常1〜2章以内の差）に着地し、文単位では一致しません。';
+
+  @override
+  String get koreaderErrorAuthentication => 'ユーザー名とパスワードを確認してください';
+
+  @override
+  String get koreaderErrorNetwork => '同期サーバーに接続できませんでした';
+
+  @override
+  String get koreaderErrorServer => 'サーバーがエラーを返しました';
+
+  @override
+  String get koreaderErrorInvalidConfiguration => 'サーバー地址が無効です';
+
+  @override
+  String get koreaderErrorInsecureConnection =>
+      'HTTPS が必要です。HTTP はプライベートサーバーのみ許可されます';
+
+  @override
+  String get koreaderErrorSecureStorage => '資格情報を安全に保存できませんでした';
+
+  @override
+  String get koreaderErrorLocalFileRequired =>
+      'オンライン書籍は同期できません。書籍ファイルをローカルに追加してから同期してください';
+
+  @override
+  String get koreaderErrorTimeout => 'サーバーの応答がタイムアウトしました';
+
+  @override
+  String get koreaderErrorUnknown => '不明なエラーが発生しました';
+
+  @override
+  String get opdsCatalogsTitle => 'OPDS カタログ';
+
+  @override
+  String get opdsCatalogsSubtitle => 'オンラインカタログを閲覧して書籍をダウンロード';
+
+  @override
+  String get opdsAddCatalog => 'カタログを追加';
+
+  @override
+  String get opdsEditCatalog => '編集';
+
+  @override
+  String get opdsCatalogUrl => 'カタログ URL';
+
+  @override
+  String get opdsCatalogName => 'カタログ名';
+
+  @override
+  String get opdsCatalogUsername => 'ユーザー名（任意）';
+
+  @override
+  String get opdsCatalogPassword => 'パスワード（任意）';
+
+  @override
+  String get opdsCatalogAllowPrivateHttp => 'プライベート / LAN の HTTP サーバーを許可';
+
+  @override
+  String get opdsCatalogTest => 'テスト';
+
+  @override
+  String get opdsCatalogTestSuccess => 'カタログにアクセスできます';
+
+  @override
+  String get opdsCatalogTestFailed => 'カタログを読み込めませんでした';
+
+  @override
+  String get opdsCatalogRemove => '削除';
+
+  @override
+  String get opdsCatalogRemoveConfirm => 'このカタログを削除しますか？';
+
+  @override
+  String get opdsCatalogEmpty => 'カタログがまだありません。追加して書籍を閲覧・ダウンロードできます。';
+
+  @override
+  String get opdsBrowseTitle => '閲覧';
+
+  @override
+  String get opdsNextPage => '次へ';
+
+  @override
+  String get opdsPreviousPage => '前へ';
+
+  @override
+  String get opdsDownload => 'ダウンロード';
+
+  @override
+  String get opdsDownloading => 'ダウンロード中…';
+
+  @override
+  String get opdsDownloadFailed => 'ダウンロードに失敗しました';
+
+  @override
+  String get opdsUnsupportedFormat => 'この形式はまだインポートできません';
+
+  @override
+  String get opdsNoAcquisition => 'ダウンロード可能なファイルがありません';
+
+  @override
+  String get opdsLoadFailed => 'カタログを読み込めませんでした';
+
+  @override
+  String get opdsRetry => '再試行';
+
+  @override
+  String get opdsUntitled => 'タイトルなし';
 }

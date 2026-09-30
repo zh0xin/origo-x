@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import '../protocol/book_source_protocol.dart';
@@ -53,10 +54,56 @@ class BookSourceNetworkPolicy {
       final targetUri = proxyHost == null
           ? uri
           : Uri(scheme: 'http', host: targetHost, port: targetPort);
+      // 先做 SSRF 校验（解析 + 私网/回环拦截），并在需要时选出可达地址。
       final addresses = await resolve(targetUri);
-      return Socket.startConnect(addresses.first, targetPort);
+
+      // 直连 HTTPS 时，connectionFactory 必须返回“已完成 TLS 握手”的套接字：
+      // dart:io 对经由 connectionFactory 得到的 socket 不会再自动叠加 TLS
+      // （http_impl 的 factory + direct 分支直接把原始 socket 当作连接使用）。
+      // 若这里返回明文 Socket，就等于把明文 HTTP 发到 TLS 端口，服务器随即断开，
+      // 表现为 “Connection closed before full header was received”。
+      // 用主机名建立 SecureSocket，以获得正确的 SNI 与证书校验
+      // （同时原生支持 IPv4/IPv6 双栈回退）；上面的 resolve() 已完成私网/SSRF 拦截。
+      if (proxyHost == null && uri.isScheme('https')) {
+        return SecureSocket.startConnect(uri.host, targetPort);
+      }
+
+      // HTTP（或经代理，由 dart:io 负责隧道内的 TLS）：绑定到已校验的 IP。
+      final target = await _firstReachableAddress(addresses, targetPort);
+      return Socket.startConnect(target, targetPort);
     };
     return client;
+  }
+
+  /// 从已通过校验的地址列表中选出首个可连通者。
+  ///
+  /// 主机名解析到多个地址（IPv4/IPv6 双栈很常见）时，仅连第一个且不回退，
+  /// 会在首选地址不可达时直接失败：例如 DDNS 域名同时给出公网 IPv4 与 IPv6，
+  /// 局域网内公网 IPv4 需路由器 NAT 回环（多数不支持）而 IPv6 可直连——
+  /// 此时应回退到可达的那个地址，而非放弃。列表里的地址都已经过 resolve() 校验，
+  /// 逐个探测不会绕过 SSRF 防护。
+  ///
+  /// 单地址时（绝大多数场景）不做任何探测，行为与直接连接完全一致。
+  static Future<InternetAddress> _firstReachableAddress(
+    List<InternetAddress> addresses,
+    int targetPort,
+  ) async {
+    for (var i = 0; i < addresses.length; i++) {
+      // 最后一个地址不再探测：直接返回，让真正的建连阶段抛出原始错误。
+      if (i == addresses.length - 1) return addresses[i];
+      try {
+        final probe = await Socket.connect(
+          addresses[i],
+          targetPort,
+          timeout: const Duration(seconds: 6),
+        );
+        probe.destroy();
+        return addresses[i];
+      } catch (_) {
+        // 该地址不可达，尝试下一个。
+      }
+    }
+    return addresses.first;
   }
 
   static bool isBlockedAddress(

@@ -10,6 +10,7 @@ import 'package:xxread/pages/reader/native_reader_page.dart';
 import 'package:xxread/pages/reader/pdf_reader_page.dart';
 import 'package:xxread/services/books/book_storage_repair_service.dart';
 import 'package:xxread/services/books/web_book_file_store.dart';
+import 'package:xxread/services/sync/koreader/koreader_sync_service.dart';
 import 'package:xxread/utils/book_open_transition.dart';
 import 'package:xxread/utils/localization_extension.dart';
 import 'package:xxread/utils/page_transitions.dart';
@@ -56,10 +57,15 @@ class NativeReaderService {
     final repaired = kIsWeb
         ? book
         : await BookStorageRepairService().repairSingleBookIfNeeded(book);
+    // KOReader 同步在打开时拉取远端进度。任何失败都静默忽略，
+    // 绝不能让同步故障阻断本地阅读。
+    final withSyncedProgress = kIsWeb
+        ? repaired
+        : await KoreaderSyncService().pullIntoBook(repaired);
     final fileExists = kIsWeb
-        ? WebBookFileStore.isWebBookPath(repaired.filePath) &&
-              await WebBookFileStore().exists(repaired.filePath)
-        : await File(repaired.filePath).exists();
+        ? WebBookFileStore.isWebBookPath(withSyncedProgress.filePath) &&
+              await WebBookFileStore().exists(withSyncedProgress.filePath)
+        : await File(withSyncedProgress.filePath).exists();
     if (!fileExists) {
       if (context.mounted) {
         showSideToast(
@@ -70,12 +76,12 @@ class NativeReaderService {
       }
       return;
     }
-    final format = repaired.format.toLowerCase();
+    final format = withSyncedProgress.format.toLowerCase();
     if (_comicFormats.contains(format)) {
       if (!context.mounted) return;
       await ComicReaderPage.open(
         context,
-        repaired,
+        withSyncedProgress,
         animation: animation,
         libraryAnimation: libraryAnimation,
         waitForReaderClose: waitForReaderClose,
@@ -95,7 +101,7 @@ class NativeReaderService {
       }
       await PdfReaderPage.open(
         context,
-        repaired,
+        withSyncedProgress,
         animation: animation,
         libraryAnimation: libraryAnimation,
         waitForReaderClose: waitForReaderClose,
@@ -118,7 +124,7 @@ class NativeReaderService {
         : await ReaderThemes.loadSavedPalette();
     if (!context.mounted) return;
     final route = BookOpenTransition.createRoute<void>(
-      NativeReaderPage(book: repaired, initialTheme: initialTheme),
+      NativeReaderPage(book: withSyncedProgress, initialTheme: initialTheme),
       animation: animation,
       libraryAnimation: libraryAnimation,
       readerBackgroundColor: initialTheme?.background,

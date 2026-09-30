@@ -29,6 +29,7 @@ import 'services/core/app_update_download_service.dart';
 import 'services/core/background_download_notifier.dart';
 import 'services/core/core_services.dart';
 import 'services/library/download_task_controller.dart';
+import 'services/sync/koreader/koreader_sync_controller.dart';
 import 'services/sync/webdav_sync_controller.dart';
 import 'utils/app_themes.dart';
 import 'utils/book_open_transition.dart';
@@ -108,6 +109,9 @@ void main(List<String> arguments) async {
           ),
           provider.ChangeNotifierProvider(
             create: (_) => WebDavSyncController(),
+          ),
+          provider.ChangeNotifierProvider(
+            create: (_) => KoreaderSyncController(),
           ),
         ],
         child: XxReadApp(
@@ -481,6 +485,28 @@ class _XxReadAppState extends State<XxReadApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       unawaited(_runAutomaticWebDavSyncIfNeeded());
+      unawaited(_runAutomaticKoreaderSyncIfNeeded());
+    }
+  }
+
+  bool _koreaderSyncInitialized = false;
+
+  Future<void> _runAutomaticKoreaderSyncIfNeeded() async {
+    if (!_koreaderSyncInitialized || !mounted) return;
+    final sync = provider.Provider.of<KoreaderSyncController>(
+      context,
+      listen: false,
+    );
+    if (!sync.isConfigured || !sync.autoSync) return;
+    final lastSuccess = sync.lastSuccessfulSync;
+    if (lastSuccess != null &&
+        DateTime.now().difference(lastSuccess) < const Duration(minutes: 15)) {
+      return;
+    }
+    try {
+      await sync.syncNow();
+    } catch (error) {
+      debugPrint('KOReader 自动同步失败（已保留本地变更）: $error');
     }
   }
 
@@ -561,6 +587,20 @@ class _XxReadAppState extends State<XxReadApp> with WidgetsBindingObserver {
     } catch (error) {
       // WebDAV 是可选能力，安全存储或远端初始化失败不能阻塞本地阅读。
       debugPrint('WebDAV 同步初始化失败（已忽略）: $error');
+    }
+
+    if (!mounted) return;
+    try {
+      final koreaderSync = provider.Provider.of<KoreaderSyncController>(
+        context,
+        listen: false,
+      );
+      await koreaderSync.initialize();
+      _koreaderSyncInitialized = true;
+      unawaited(_runAutomaticKoreaderSyncIfNeeded());
+    } catch (error) {
+      // KOReader 同步同样是可选能力，失败不阻塞本地阅读。
+      debugPrint('KOReader 同步初始化失败（已忽略）: $error');
     }
 
     if (!mounted) return;

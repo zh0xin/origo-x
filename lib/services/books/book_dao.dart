@@ -4,17 +4,26 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:xxread/models/book.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:xxread/services/core/database_service.dart';
 import 'package:xxread/services/books/book_image_map_service.dart';
 import 'package:xxread/services/books/book_import_models.dart';
 import 'package:xxread/services/books/web_book_file_store.dart';
 
 class BookDao implements BookImportStore {
-  final _dbService = DatabaseService();
+  /// [databaseProvider] 仅供测试注入独立数据库；
+  /// 生产环境走 [DatabaseService] 单例。
+  BookDao({Future<Database> Function()? databaseProvider})
+    : _databaseProvider = databaseProvider ?? (() => _dbService.database);
+
+  static final _dbService = DatabaseService();
+  final Future<Database> Function() _databaseProvider;
+
+  Future<Database> get _db => _databaseProvider();
 
   Future<int> insertBook(Book book) async {
     try {
-      final db = await _dbService.database;
+      final db = await _db;
       return await db.insert('books', book.toMap());
     } catch (e) {
       throw Exception('添加书籍失败: $e');
@@ -23,7 +32,7 @@ class BookDao implements BookImportStore {
 
   Future<List<Book>> getAllBooks() async {
     try {
-      final db = await _dbService.database;
+      final db = await _db;
       final List<Map<String, dynamic>> maps = await db.query(
         'books',
         columns: [
@@ -66,7 +75,7 @@ class BookDao implements BookImportStore {
     double? readingProgress,
   }) async {
     try {
-      final db = await _dbService.database;
+      final db = await _db;
       final values = <String, Object?>{'currentPage': currentPage};
       if (readingProgress != null) {
         values['reading_progress'] = readingProgress.clamp(0.0, 1.0);
@@ -87,7 +96,7 @@ class BookDao implements BookImportStore {
 
   Future<int> getBooksCount() async {
     try {
-      final db = await _dbService.database;
+      final db = await _db;
       final result = await db.rawQuery('SELECT COUNT(*) as count FROM books');
       return (result.first['count'] as int?) ?? 0;
     } catch (e) {
@@ -97,7 +106,7 @@ class BookDao implements BookImportStore {
 
   Future<Book?> getBookById(int bookId) async {
     try {
-      final db = await _dbService.database;
+      final db = await _db;
       final List<Map<String, dynamic>> maps = await db.query(
         'books',
         where: 'id = ?',
@@ -138,7 +147,7 @@ class BookDao implements BookImportStore {
 
   Future<void> updateBook(Book book) async {
     try {
-      final db = await _dbService.database;
+      final db = await _db;
       final result = await db.update(
         'books',
         book.toMap(),
@@ -155,7 +164,7 @@ class BookDao implements BookImportStore {
 
   Future<void> deleteBook(int bookId) async {
     try {
-      final db = await _dbService.database;
+      final db = await _db;
       final book = await getBookById(bookId);
 
       // 🗑️ 删除相关缓存
@@ -235,7 +244,7 @@ class BookDao implements BookImportStore {
   // 更新书籍文件路径 - 用于处理iOS沙盒路径变更
   Future<void> updateBookFilePath(int bookId, String newFilePath) async {
     try {
-      final db = await _dbService.database;
+      final db = await _db;
       final result = await db.update(
         'books',
         {'filePath': newFilePath},
@@ -253,7 +262,7 @@ class BookDao implements BookImportStore {
   // 更新书籍封面图片路径
   Future<void> updateBookCoverPath(int bookId, String? coverImagePath) async {
     try {
-      final db = await _dbService.database;
+      final db = await _db;
       final result = await db.update(
         'books',
         {'cover_image_path': coverImagePath},
@@ -276,7 +285,7 @@ class BookDao implements BookImportStore {
   @override
   Future<Book?> getBookByHash(String contentHash) async {
     try {
-      final db = await _dbService.database;
+      final db = await _db;
       final List<Map<String, dynamic>> maps = await db.query(
         'books',
         where: 'content_hash = ?',
@@ -380,7 +389,7 @@ class BookDao implements BookImportStore {
     double? readingProgress,
   }) async {
     try {
-      final db = await _dbService.database;
+      final db = await _db;
       final updates = <String, dynamic>{
         'last_canonical_locator': canonicalJson,
         'currentPage': currentPage,

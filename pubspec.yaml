@@ -47,6 +47,7 @@ dependencies:
   pdfx: ^2.9.2
   archive: ^3.6.1
   kindle_unpack: ^0.1.1
+  xml: ^6.6.1 # OPDS 目录解析（此前为 epubx 的传递依赖）
 
   # 打开项目主页和外部协议文档
   url_launcher: ^6.3.2

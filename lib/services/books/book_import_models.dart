@@ -11,7 +11,8 @@ enum BookImportSourceKind {
   iosSharedDocuments('ios_shared_documents'),
   iosICloud('ios_icloud'),
   systemOpen('system_open'),
-  systemShare('system_share');
+  systemShare('system_share'),
+  opdsDownload('opds_download');
 
   const BookImportSourceKind(this.storageValue);
 
@@ -86,6 +87,23 @@ class BookImportSource {
     sizeBytes: sizeBytes,
     modifiedTime: modifiedTime,
     bytes: bytes,
+  );
+
+  /// 返回一个已物化到本地文件、不再持有内存字节的副本。
+  ///
+  /// 用于「先下载到内存、再落盘」的场景（如 OPDS 下载）：文件既已写入磁盘，
+  /// 继续保留整本书的字节只会多占一份内存，而且会让释放逻辑误判为
+  /// 「内存来源，无需清理临时文件」而造成泄漏。
+  BookImportSource materialized(String path) => BookImportSource(
+    id: id,
+    kind: kind,
+    ownership: ownership,
+    displayName: displayName,
+    extension: extension,
+    locator: locator,
+    localPath: path,
+    sizeBytes: sizeBytes,
+    modifiedTime: modifiedTime,
   );
 }
 

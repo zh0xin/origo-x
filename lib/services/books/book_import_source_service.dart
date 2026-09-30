@@ -185,6 +185,12 @@ class BookImportSourceService implements BookImportSourcePreparer {
 
   @override
   Future<BookImportSource> prepare(BookImportSource source) async {
+    // OPDS 下载以内存字节交付，而导入器（除 Web 端外）需要可读取的本地文件，
+    // 因此先把字节物化到受管临时目录，再走常规流程。
+    if (source.kind == BookImportSourceKind.opdsDownload &&
+        source.bytes != null) {
+      return _materializeBytes(source);
+    }
     if (source.bytes != null) return source;
     if (source.localPath != null) return source;
 
@@ -212,7 +218,8 @@ class BookImportSourceService implements BookImportSourcePreparer {
       BookImportSourceKind.filePicker ||
       BookImportSourceKind.iosSharedDocuments ||
       BookImportSourceKind.systemOpen ||
-      BookImportSourceKind.systemShare => throw StateError(
+      BookImportSourceKind.systemShare ||
+      BookImportSourceKind.opdsDownload => throw StateError(
         '${source.kind.name} 来源缺少本地路径',
       ),
     };
@@ -239,7 +246,8 @@ class BookImportSourceService implements BookImportSourcePreparer {
     if (source.bytes != null) return;
     final isMaterializedDocument =
         source.kind == BookImportSourceKind.androidTree ||
-        source.kind == BookImportSourceKind.iosICloud;
+        source.kind == BookImportSourceKind.iosICloud ||
+        source.kind == BookImportSourceKind.opdsDownload;
     final isIncomingBook =
         source.kind == BookImportSourceKind.systemOpen ||
         source.kind == BookImportSourceKind.systemShare;
@@ -258,6 +266,41 @@ class BookImportSourceService implements BookImportSourcePreparer {
     if (await file.exists()) {
       await file.delete();
     }
+  }
+
+  /// 把内存字节写入受管临时目录，返回带本地路径的来源。
+  ///
+  /// 文件名取 [BookImportSource.displayName]，扩展名由 OPDS 下载服务按
+  /// 内容类型推断并已带在其中。写入后重新读取长度做一次校验，避免静默截断。
+  ///
+  /// 返回的来源不再持有字节：文件已落盘，继续把整本书留在内存里只会白白
+  /// 占用一份大块内存，而且会让 [release] 的「内存来源无需清理」判断短路，
+  /// 导致临时文件泄漏。
+  Future<BookImportSource> _materializeBytes(BookImportSource source) async {
+    final bytes = source.bytes!;
+    final temporaryRoot = await _temporaryDirectory();
+    final materializedDirectory = Directory(
+      join(temporaryRoot.path, 'book_import_sources'),
+    );
+    await materializedDirectory.create(recursive: true);
+    final destination = await _allocateTemporaryDestination(
+      materializedDirectory,
+      source.displayName,
+    );
+    final file = File(destination.path);
+    await file.writeAsBytes(bytes, flush: true);
+    final actualBytes = await file.length();
+    if (actualBytes != bytes.length) {
+      if (await file.exists()) {
+        await file.delete();
+      }
+      throw BookImportFailure(
+        code: 'copy_verification_failed',
+        message:
+            'Materialized size mismatch: expected=${bytes.length} actual=$actualBytes',
+      );
+    }
+    return source.materialized(file.path);
   }
 
   List<BookImportSource> _sourcesFromRows(

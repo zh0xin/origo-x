@@ -53,6 +53,8 @@ import 'package:xxread/services/books/web_book_file_store.dart';
 import 'package:xxread/services/core/app_settings_service.dart';
 import 'package:xxread/services/reading/reading_resume_service.dart';
 import 'package:xxread/services/reading/reading_stats_dao.dart';
+import 'package:xxread/services/sync/koreader/koreader_progress_resolver.dart';
+import 'package:xxread/services/sync/koreader/koreader_sync_service.dart';
 import 'package:xxread/services/tts_service.dart';
 import 'package:xxread/services/reader_aloud_service.dart';
 import 'package:xxread/utils/book_open_transition.dart';
@@ -345,6 +347,11 @@ class _NativeReaderPageState extends State<NativeReaderPage>
         state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
       unawaited(_flushReadingSession());
+      // KOReader 同步：离开前台时立刻发送待推送进度，
+      // 避免等到去抖窗口结束就被系统挂起。
+      if (!kIsWeb) {
+        unawaited(KoreaderSyncService().flushPending());
+      }
     }
   }
 
@@ -633,6 +640,9 @@ class _NativeReaderPageState extends State<NativeReaderPage>
     if (chapters.isEmpty) return chapters;
 
     _loadedChapters = chapters;
+    // KOReader 同步：若打开时拉到了远端进度（百分比），换算为章节+偏移，
+    // 并交给现有锚点恢复管线。取不到待应用值时是纯粹的空操作。
+    _applyPendingKoreaderProgression(chapters);
     final initialChapterIndex = _chapterIndex.clamp(0, chapters.length - 1);
     // 冷缓存打开时，章节文本的读取与 UTF-8 解码（UI isolate 上数十毫秒）
     // 等封面飞到静止的停留画面再执行，避免解码回调冻结飞行帧。
@@ -1175,6 +1185,17 @@ class _NativeReaderPageState extends State<NativeReaderPage>
       chapterIndex,
       readingProgress: readingProgress,
     );
+    // KOReader 同步：记录本地进度并去抖推送。内部已按配置与阈值短路，
+    // 未配置同步时是纯粹的空操作。EPUB 额外带上章节归档路径与章内偏移，
+    // 以便推送时生成 crengine XPointer，实现与 KOReader 的精确落点互通。
+    if (readingProgress != null && !kIsWeb) {
+      KoreaderSyncService().noteLocalProgress(
+        bookId,
+        readingProgress,
+        chapterArchivePath: chapter.archivePath,
+        offsetUtf16: page.startOffset,
+      );
+    }
   }
 
   Future<void> _setPageMode(NativePageMode mode) async {
@@ -1224,6 +1245,61 @@ class _NativeReaderPageState extends State<NativeReaderPage>
     _chapterIndex = resolvedIndex;
     _horizontalFirstChapter = (resolvedIndex - 1).clamp(0, resolvedIndex);
     _horizontalLastChapter = resolvedIndex + 1;
+  }
+
+  /// 应用从 KOReader 拉取的远端进度。
+  ///
+  /// 远端只提供百分比，而本应用的位置以 CanonicalLocator（章节 id + 文本锚点）
+  /// 表达，单靠百分比无法直接恢复。因此这里把百分比按本应用的章节划分反算成
+  /// 章节下标与章内偏移，再写回 `_savedChapterId` / `_anchorOffset`，
+  /// 由既有的锚点恢复管线完成跳转。
+  ///
+  /// 换算是近似的（百分比度量与本应用的章节均分度量不同），落点通常在
+  /// 目标位置的一两章以内。
+  ///
+  /// 严格以「有待应用进度」为门：未配置同步、未拉到远端进度时完全不触碰
+  /// 阅读器状态，因此不影响正常本地打开。
+  void _applyPendingKoreaderProgression(List<_NativeChapter> chapters) {
+    final bookId = widget.book.id;
+    if (bookId == null || chapters.isEmpty) return;
+    final pending = KoreaderSyncService().takePendingApply(bookId);
+    if (pending == null) return;
+
+    // EPUB 精确落点：远端带回 crengine XPointer，已被解析成「章节归档路径 +
+    // 章内偏移」。按归档路径定位到具体章节，直接走锚点恢复管线，实现与
+    // KOReader 句级对齐；找不到对应章节时回退到百分比近似。
+    if (pending.hasPrecisePosition) {
+      final index = chapters.indexWhere(
+        (chapter) => chapter.archivePath == pending.chapterArchivePath,
+      );
+      if (index >= 0) {
+        _chapterIndex = index;
+        _horizontalFirstChapter = (_chapterIndex - 1).clamp(0, _chapterIndex);
+        _horizontalLastChapter = _chapterIndex + 1;
+        _savedChapterId = chapters[_chapterIndex].id;
+        _anchorOffset = pending.offsetUtf16;
+        _verticalCanonicalOffset = _anchorOffset;
+        _initialPositionRestored = false;
+        _restoreAnchorAfterLayout = true;
+        return;
+      }
+    }
+
+    // 降级：按「章节数均分」的百分比公式逆算近似位置。
+    final resolved = resolveKoreaderProgression(
+      pending.percentage,
+      chapters
+          .map((chapter) => chapter.plainText.length)
+          .toList(growable: false),
+    );
+    _chapterIndex = resolved.chapterIndex.clamp(0, chapters.length - 1);
+    _horizontalFirstChapter = (_chapterIndex - 1).clamp(0, _chapterIndex);
+    _horizontalLastChapter = _chapterIndex + 1;
+    _savedChapterId = chapters[_chapterIndex].id;
+    _anchorOffset = resolved.offsetInChapter;
+    _verticalCanonicalOffset = _anchorOffset;
+    _initialPositionRestored = false;
+    _restoreAnchorAfterLayout = true;
   }
 
   void _scheduleInitialContinuousScrollRestore(Size viewport) {
@@ -5070,6 +5146,9 @@ class _NativeChapter {
 
   bool get isLazyEpub => _epubDescriptor != null;
   bool get hasPendingLoad => _pendingLoad != null;
+
+  /// EPUB 章节在 zip 中的归档路径（用于 KOReader XPointer 定位）；非 EPUB 为 null。
+  String? get archivePath => _epubDescriptor?['archivePath'] as String?;
   Future<void>? get pendingLoad => _pendingLoad;
   Map<String, dynamic> get epubDescriptor => _epubDescriptor!;
   Map<String, dynamic> get epubLoadArguments => _epubLoadArguments!;

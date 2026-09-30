@@ -337,4 +337,110 @@ void main() {
 
     expect(temporaryDirectoryCalls, 0);
   });
+
+  group('OPDS 下载来源', () {
+    late Directory temporary;
+
+    setUp(() async {
+      temporary = await Directory.systemTemp.createTemp('opds-source-test-');
+    });
+
+    tearDown(() async {
+      if (temporary.existsSync()) await temporary.delete(recursive: true);
+    });
+
+    BookImportSource _source() => BookImportSource.withBytes(
+      id: 'opds:https://catalog.example.org/files/1.epub',
+      kind: BookImportSourceKind.opdsDownload,
+      ownership: BookImportOwnership.externalCopy,
+      displayName: 'The Silent Book.epub',
+      extension: 'epub',
+      locator: 'https://catalog.example.org/files/1.epub',
+      sizeBytes: 4,
+      bytes: Uint8List.fromList(<int>[80, 75, 3, 4]),
+    );
+
+    test('内存字节被物化为受管临时目录下的本地文件', () async {
+      final service = BookImportSourceService(
+        temporaryDirectory: () async => temporary,
+      );
+
+      final prepared = await service.prepare(_source());
+
+      expect(prepared.localPath, isNotNull);
+      expect(prepared.bytes, isNull, reason: '物化后不再持有内存字节');
+      final file = File(prepared.localPath!);
+      expect(file.existsSync(), isTrue);
+      expect(await file.readAsBytes(), <int>[80, 75, 3, 4]);
+      expect(p.basename(prepared.localPath!), 'The Silent Book.epub');
+    });
+
+    test('物化文件位于 book_import_sources 目录下', () async {
+      final service = BookImportSourceService(
+        temporaryDirectory: () async => temporary,
+      );
+
+      final prepared = await service.prepare(_source());
+
+      expect(p.basename(p.dirname(prepared.localPath!)), 'book_import_sources');
+    });
+
+    test('释放时删除临时文件', () async {
+      final service = BookImportSourceService(
+        temporaryDirectory: () async => temporary,
+      );
+      final prepared = await service.prepare(_source());
+      final path = prepared.localPath!;
+      expect(File(path).existsSync(), isTrue);
+
+      await service.release(prepared);
+
+      expect(File(path).existsSync(), isFalse);
+    });
+
+    test('非 OPDS 来源的内存快速路径不受影响', () async {
+      var temporaryDirectoryCalls = 0;
+      final service = BookImportSourceService(
+        temporaryDirectory: () async {
+          temporaryDirectoryCalls++;
+          throw StateError('不应访问临时目录');
+        },
+      );
+      final source = BookImportSource.withBytes(
+        id: 'file_picker:memory',
+        kind: BookImportSourceKind.filePicker,
+        ownership: BookImportOwnership.externalCopy,
+        displayName: 'a.txt',
+        extension: 'txt',
+        locator: 'memory://a',
+        sizeBytes: 1,
+        bytes: Uint8List.fromList(<int>[1]),
+      );
+
+      expect(await service.prepare(source), same(source));
+      expect(temporaryDirectoryCalls, 0);
+    });
+
+    test('已带本地路径的 OPDS 来源不再物化', () async {
+      var temporaryDirectoryCalls = 0;
+      final service = BookImportSourceService(
+        temporaryDirectory: () async {
+          temporaryDirectoryCalls++;
+          throw StateError('不应访问临时目录');
+        },
+      );
+      final source = BookImportSource(
+        id: 'opds:x',
+        kind: BookImportSourceKind.opdsDownload,
+        ownership: BookImportOwnership.externalCopy,
+        displayName: 'a.epub',
+        extension: 'epub',
+        locator: 'https://example.org/a.epub',
+        localPath: '${temporary.path}/already.epub',
+      );
+
+      expect(await service.prepare(source), same(source));
+      expect(temporaryDirectoryCalls, 0);
+    });
+  });
 }

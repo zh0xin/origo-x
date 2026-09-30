@@ -7815,6 +7815,420 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select text to highlight or add a comment. Tap an underlined comment to read it again.'**
   String get readerNoAnnotationsHint;
+
+  /// KOReader (kosync) progress sync settings entry title
+  ///
+  /// In en, this message translates to:
+  /// **'KOReader progress sync'**
+  String get koreaderSyncTitle;
+
+  /// KOReader sync entry subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Sync reading progress with KOReader devices'**
+  String get koreaderSyncSubtitle;
+
+  /// KOReader sync beta stability badge
+  ///
+  /// In en, this message translates to:
+  /// **'Beta'**
+  String get koreaderSyncBetaBadge;
+
+  /// KOReader sync status when no server is configured
+  ///
+  /// In en, this message translates to:
+  /// **'Not configured'**
+  String get koreaderSyncNotConfigured;
+
+  /// KOReader sync setup entry subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Set up a KOReader sync server'**
+  String get koreaderSyncConfigureSubtitle;
+
+  /// Button to configure KOReader sync
+  ///
+  /// In en, this message translates to:
+  /// **'Set up'**
+  String get koreaderSyncSetUp;
+
+  /// Button to trigger an immediate KOReader sync
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get koreaderSyncNow;
+
+  /// KOReader sync in-progress status
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing…'**
+  String get koreaderSyncSyncing;
+
+  /// KOReader sync connected status
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get koreaderSyncConnected;
+
+  /// KOReader sync failed status
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed'**
+  String get koreaderSyncFailed;
+
+  /// KOReader sync last sync time
+  ///
+  /// In en, this message translates to:
+  /// **'Last sync: {time}'**
+  String koreaderSyncLastSync(String time);
+
+  /// KOReader sync never synced status
+  ///
+  /// In en, this message translates to:
+  /// **'Never synced'**
+  String get koreaderSyncNeverSynced;
+
+  /// KOReader sync result summary
+  ///
+  /// In en, this message translates to:
+  /// **'Pushed {pushed}, pulled {pulled}'**
+  String koreaderSyncPushedPulled(int pushed, int pulled);
+
+  /// KOReader sync server URL field label
+  ///
+  /// In en, this message translates to:
+  /// **'Sync server'**
+  String get koreaderServerUrl;
+
+  /// KOReader sync server URL placeholder
+  ///
+  /// In en, this message translates to:
+  /// **'https://sync.koreader.rocks'**
+  String get koreaderServerUrlHint;
+
+  /// KOReader sync username field label
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get koreaderUsername;
+
+  /// KOReader sync password field label
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get koreaderPassword;
+
+  /// Helper text clarifying the password is hashed
+  ///
+  /// In en, this message translates to:
+  /// **'Only the password hash is sent to the server'**
+  String get koreaderPasswordHint;
+
+  /// KOReader document id method label
+  ///
+  /// In en, this message translates to:
+  /// **'Match books by'**
+  String get koreaderChecksumMode;
+
+  /// Partial MD5 checksum method option
+  ///
+  /// In en, this message translates to:
+  /// **'File contents (recommended)'**
+  String get koreaderChecksumPartialMd5;
+
+  /// Filename MD5 checksum method option
+  ///
+  /// In en, this message translates to:
+  /// **'Filename'**
+  String get koreaderChecksumFilename;
+
+  /// Checksum method helper text
+  ///
+  /// In en, this message translates to:
+  /// **'Must match the method your KOReader uses, or progress won\'t line up across apps'**
+  String get koreaderChecksumHint;
+
+  /// Allow insecure HTTP for private network self-hosted servers
+  ///
+  /// In en, this message translates to:
+  /// **'Allow private/LAN HTTP servers'**
+  String get koreaderAllowPrivateHttp;
+
+  /// Private HTTP helper text
+  ///
+  /// In en, this message translates to:
+  /// **'Only for trusted self-hosted servers on your local network'**
+  String get koreaderAllowPrivateHttpHint;
+
+  /// KOReader sync test connection button
+  ///
+  /// In en, this message translates to:
+  /// **'Test connection'**
+  String get koreaderTestConnection;
+
+  /// KOReader sync test success message
+  ///
+  /// In en, this message translates to:
+  /// **'Connected successfully'**
+  String get koreaderTestSuccess;
+
+  /// KOReader register new account button
+  ///
+  /// In en, this message translates to:
+  /// **'Register a new account'**
+  String get koreaderRegisterAccount;
+
+  /// KOReader register description
+  ///
+  /// In en, this message translates to:
+  /// **'Create an account on the sync server'**
+  String get koreaderRegisterDescription;
+
+  /// KOReader register success message
+  ///
+  /// In en, this message translates to:
+  /// **'Account registered'**
+  String get koreaderRegisterSuccess;
+
+  /// KOReader register username taken error
+  ///
+  /// In en, this message translates to:
+  /// **'That username is already taken'**
+  String get koreaderRegisterUsernameTaken;
+
+  /// KOReader sync pull on book open toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Pull on open'**
+  String get koreaderSyncOnOpen;
+
+  /// KOReader sync push on progress save toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Push on save'**
+  String get koreaderSyncOnSave;
+
+  /// KOReader sync prefer local position toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer local position on first sync'**
+  String get koreaderPreferLocalFirstSync;
+
+  /// Honest note about percentage sync fidelity
+  ///
+  /// In en, this message translates to:
+  /// **'Progress syncs as a percentage. Your app and KOReader measure position differently, so a synced position lands near the right place, usually within a chapter or two — not at the exact sentence.'**
+  String get koreaderFidelityNote;
+
+  /// KOReader auth error message
+  ///
+  /// In en, this message translates to:
+  /// **'Check your username and password'**
+  String get koreaderErrorAuthentication;
+
+  /// KOReader network error message
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach the sync server'**
+  String get koreaderErrorNetwork;
+
+  /// KOReader server error message
+  ///
+  /// In en, this message translates to:
+  /// **'The sync server returned an error'**
+  String get koreaderErrorServer;
+
+  /// KOReader invalid config error message
+  ///
+  /// In en, this message translates to:
+  /// **'The server address is invalid'**
+  String get koreaderErrorInvalidConfiguration;
+
+  /// KOReader insecure connection error message
+  ///
+  /// In en, this message translates to:
+  /// **'HTTPS is required; HTTP is only allowed for private servers'**
+  String get koreaderErrorInsecureConnection;
+
+  /// KOReader secure storage error message
+  ///
+  /// In en, this message translates to:
+  /// **'The credential could not be stored securely'**
+  String get koreaderErrorSecureStorage;
+
+  /// KOReader local file required message
+  ///
+  /// In en, this message translates to:
+  /// **'Online books can\'t be synced; add the book file to sync its progress'**
+  String get koreaderErrorLocalFileRequired;
+
+  /// KOReader timeout error message
+  ///
+  /// In en, this message translates to:
+  /// **'The sync server did not respond in time'**
+  String get koreaderErrorTimeout;
+
+  /// KOReader unknown error message
+  ///
+  /// In en, this message translates to:
+  /// **'An unknown error occurred'**
+  String get koreaderErrorUnknown;
+
+  /// OPDS catalogs settings entry title
+  ///
+  /// In en, this message translates to:
+  /// **'OPDS catalogs'**
+  String get opdsCatalogsTitle;
+
+  /// OPDS catalogs entry subtitle
+  ///
+  /// In en, this message translates to:
+  /// **'Browse and download books from online catalogs'**
+  String get opdsCatalogsSubtitle;
+
+  /// OPDS add catalog button
+  ///
+  /// In en, this message translates to:
+  /// **'Add catalog'**
+  String get opdsAddCatalog;
+
+  /// OPDS edit catalog button
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get opdsEditCatalog;
+
+  /// OPDS catalog URL field label
+  ///
+  /// In en, this message translates to:
+  /// **'Catalog URL'**
+  String get opdsCatalogUrl;
+
+  /// OPDS catalog name field label
+  ///
+  /// In en, this message translates to:
+  /// **'Catalog name'**
+  String get opdsCatalogName;
+
+  /// OPDS catalog basic auth username field
+  ///
+  /// In en, this message translates to:
+  /// **'Username (optional)'**
+  String get opdsCatalogUsername;
+
+  /// OPDS catalog basic auth password field
+  ///
+  /// In en, this message translates to:
+  /// **'Password (optional)'**
+  String get opdsCatalogPassword;
+
+  /// OPDS allow insecure HTTP for private network
+  ///
+  /// In en, this message translates to:
+  /// **'Allow private/LAN HTTP servers'**
+  String get opdsCatalogAllowPrivateHttp;
+
+  /// OPDS catalog test button
+  ///
+  /// In en, this message translates to:
+  /// **'Test'**
+  String get opdsCatalogTest;
+
+  /// OPDS catalog test success message
+  ///
+  /// In en, this message translates to:
+  /// **'Catalog is reachable'**
+  String get opdsCatalogTestSuccess;
+
+  /// OPDS catalog test failed message
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the catalog'**
+  String get opdsCatalogTestFailed;
+
+  /// OPDS catalog remove button
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get opdsCatalogRemove;
+
+  /// OPDS catalog remove confirmation
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this catalog?'**
+  String get opdsCatalogRemoveConfirm;
+
+  /// OPDS empty catalog list message
+  ///
+  /// In en, this message translates to:
+  /// **'No catalogs yet. Add one to browse and download books.'**
+  String get opdsCatalogEmpty;
+
+  /// OPDS browse page title
+  ///
+  /// In en, this message translates to:
+  /// **'Browse'**
+  String get opdsBrowseTitle;
+
+  /// OPDS next page button
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get opdsNextPage;
+
+  /// OPDS previous page button
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get opdsPreviousPage;
+
+  /// OPDS download button
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get opdsDownload;
+
+  /// OPDS downloading status
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading…'**
+  String get opdsDownloading;
+
+  /// OPDS download failed message
+  ///
+  /// In en, this message translates to:
+  /// **'Download failed'**
+  String get opdsDownloadFailed;
+
+  /// OPDS unsupported format message
+  ///
+  /// In en, this message translates to:
+  /// **'This format can\'t be imported yet'**
+  String get opdsUnsupportedFormat;
+
+  /// OPDS entry has no acquisition link
+  ///
+  /// In en, this message translates to:
+  /// **'No downloadable file'**
+  String get opdsNoAcquisition;
+
+  /// OPDS load failed message
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load this catalog'**
+  String get opdsLoadFailed;
+
+  /// OPDS retry button
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get opdsRetry;
+
+  /// OPDS untitled entry fallback
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled'**
+  String get opdsUntitled;
 }
 
 class _AppLocalizationsDelegate

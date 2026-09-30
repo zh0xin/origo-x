@@ -4435,4 +4435,228 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get readerNoAnnotationsHint =>
       'Select text to highlight or add a comment. Tap an underlined comment to read it again.';
+
+  @override
+  String get koreaderSyncTitle => 'KOReader progress sync';
+
+  @override
+  String get koreaderSyncSubtitle =>
+      'Sync reading progress with KOReader devices';
+
+  @override
+  String get koreaderSyncBetaBadge => 'Beta';
+
+  @override
+  String get koreaderSyncNotConfigured => 'Not configured';
+
+  @override
+  String get koreaderSyncConfigureSubtitle => 'Set up a KOReader sync server';
+
+  @override
+  String get koreaderSyncSetUp => 'Set up';
+
+  @override
+  String get koreaderSyncNow => 'Sync now';
+
+  @override
+  String get koreaderSyncSyncing => 'Syncing…';
+
+  @override
+  String get koreaderSyncConnected => 'Connected';
+
+  @override
+  String get koreaderSyncFailed => 'Sync failed';
+
+  @override
+  String koreaderSyncLastSync(String time) {
+    return 'Last sync: $time';
+  }
+
+  @override
+  String get koreaderSyncNeverSynced => 'Never synced';
+
+  @override
+  String koreaderSyncPushedPulled(int pushed, int pulled) {
+    return 'Pushed $pushed, pulled $pulled';
+  }
+
+  @override
+  String get koreaderServerUrl => 'Sync server';
+
+  @override
+  String get koreaderServerUrlHint => 'https://sync.koreader.rocks';
+
+  @override
+  String get koreaderUsername => 'Username';
+
+  @override
+  String get koreaderPassword => 'Password';
+
+  @override
+  String get koreaderPasswordHint =>
+      'Only the password hash is sent to the server';
+
+  @override
+  String get koreaderChecksumMode => 'Match books by';
+
+  @override
+  String get koreaderChecksumPartialMd5 => 'File contents (recommended)';
+
+  @override
+  String get koreaderChecksumFilename => 'Filename';
+
+  @override
+  String get koreaderChecksumHint =>
+      'Must match the method your KOReader uses, or progress won\'t line up across apps';
+
+  @override
+  String get koreaderAllowPrivateHttp => 'Allow private/LAN HTTP servers';
+
+  @override
+  String get koreaderAllowPrivateHttpHint =>
+      'Only for trusted self-hosted servers on your local network';
+
+  @override
+  String get koreaderTestConnection => 'Test connection';
+
+  @override
+  String get koreaderTestSuccess => 'Connected successfully';
+
+  @override
+  String get koreaderRegisterAccount => 'Register a new account';
+
+  @override
+  String get koreaderRegisterDescription =>
+      'Create an account on the sync server';
+
+  @override
+  String get koreaderRegisterSuccess => 'Account registered';
+
+  @override
+  String get koreaderRegisterUsernameTaken => 'That username is already taken';
+
+  @override
+  String get koreaderSyncOnOpen => 'Pull on open';
+
+  @override
+  String get koreaderSyncOnSave => 'Push on save';
+
+  @override
+  String get koreaderPreferLocalFirstSync =>
+      'Prefer local position on first sync';
+
+  @override
+  String get koreaderFidelityNote =>
+      'Progress syncs as a percentage. Your app and KOReader measure position differently, so a synced position lands near the right place, usually within a chapter or two — not at the exact sentence.';
+
+  @override
+  String get koreaderErrorAuthentication => 'Check your username and password';
+
+  @override
+  String get koreaderErrorNetwork => 'Could not reach the sync server';
+
+  @override
+  String get koreaderErrorServer => 'The sync server returned an error';
+
+  @override
+  String get koreaderErrorInvalidConfiguration =>
+      'The server address is invalid';
+
+  @override
+  String get koreaderErrorInsecureConnection =>
+      'HTTPS is required; HTTP is only allowed for private servers';
+
+  @override
+  String get koreaderErrorSecureStorage =>
+      'The credential could not be stored securely';
+
+  @override
+  String get koreaderErrorLocalFileRequired =>
+      'Online books can\'t be synced; add the book file to sync its progress';
+
+  @override
+  String get koreaderErrorTimeout => 'The sync server did not respond in time';
+
+  @override
+  String get koreaderErrorUnknown => 'An unknown error occurred';
+
+  @override
+  String get opdsCatalogsTitle => 'OPDS catalogs';
+
+  @override
+  String get opdsCatalogsSubtitle =>
+      'Browse and download books from online catalogs';
+
+  @override
+  String get opdsAddCatalog => 'Add catalog';
+
+  @override
+  String get opdsEditCatalog => 'Edit';
+
+  @override
+  String get opdsCatalogUrl => 'Catalog URL';
+
+  @override
+  String get opdsCatalogName => 'Catalog name';
+
+  @override
+  String get opdsCatalogUsername => 'Username (optional)';
+
+  @override
+  String get opdsCatalogPassword => 'Password (optional)';
+
+  @override
+  String get opdsCatalogAllowPrivateHttp => 'Allow private/LAN HTTP servers';
+
+  @override
+  String get opdsCatalogTest => 'Test';
+
+  @override
+  String get opdsCatalogTestSuccess => 'Catalog is reachable';
+
+  @override
+  String get opdsCatalogTestFailed => 'Could not load the catalog';
+
+  @override
+  String get opdsCatalogRemove => 'Remove';
+
+  @override
+  String get opdsCatalogRemoveConfirm => 'Remove this catalog?';
+
+  @override
+  String get opdsCatalogEmpty =>
+      'No catalogs yet. Add one to browse and download books.';
+
+  @override
+  String get opdsBrowseTitle => 'Browse';
+
+  @override
+  String get opdsNextPage => 'Next';
+
+  @override
+  String get opdsPreviousPage => 'Previous';
+
+  @override
+  String get opdsDownload => 'Download';
+
+  @override
+  String get opdsDownloading => 'Downloading…';
+
+  @override
+  String get opdsDownloadFailed => 'Download failed';
+
+  @override
+  String get opdsUnsupportedFormat => 'This format can\'t be imported yet';
+
+  @override
+  String get opdsNoAcquisition => 'No downloadable file';
+
+  @override
+  String get opdsLoadFailed => 'Could not load this catalog';
+
+  @override
+  String get opdsRetry => 'Retry';
+
+  @override
+  String get opdsUntitled => 'Untitled';
 }

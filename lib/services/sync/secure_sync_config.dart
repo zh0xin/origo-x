@@ -171,7 +171,7 @@ Uri validateWebDavConfiguration(
     );
   }
   if (uri.scheme != 'https') {
-    final privateHost = _isPrivateHost(uri.host);
+    final privateHost = isPrivateHost(uri.host);
     if (uri.scheme != 'http' ||
         !privateHost ||
         !configuration.allowInsecurePrivateHttp) {
@@ -184,7 +184,10 @@ Uri validateWebDavConfiguration(
   return uri;
 }
 
-bool _isPrivateHost(String host) {
+/// 判断主机是否为本机或私有网段地址。
+///
+/// 供「允许明文 HTTP 仅限私网」这一策略复用（WebDAV 与 KOReader 同步共用）。
+bool isPrivateHost(String host) {
   final normalized = host.toLowerCase();
   if (normalized == 'localhost' || normalized.endsWith('.local')) return true;
   final parts = normalized.split('.').map(int.tryParse).toList();

@@ -4223,6 +4223,218 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get readerNoAnnotationsHint => '选中文字即可高亮或添加文字批注；点击带下划线的批注文字可再次查看笔记。';
+
+  @override
+  String get koreaderSyncTitle => 'KOReader 进度同步';
+
+  @override
+  String get koreaderSyncSubtitle => '与 KOReader 设备同步阅读进度';
+
+  @override
+  String get koreaderSyncBetaBadge => '测试版';
+
+  @override
+  String get koreaderSyncNotConfigured => '未配置';
+
+  @override
+  String get koreaderSyncConfigureSubtitle => '设置 KOReader 同步服务器';
+
+  @override
+  String get koreaderSyncSetUp => '设置';
+
+  @override
+  String get koreaderSyncNow => '立即同步';
+
+  @override
+  String get koreaderSyncSyncing => '同步中…';
+
+  @override
+  String get koreaderSyncConnected => '已连接';
+
+  @override
+  String get koreaderSyncFailed => '同步失败';
+
+  @override
+  String koreaderSyncLastSync(String time) {
+    return '上次同步：$time';
+  }
+
+  @override
+  String get koreaderSyncNeverSynced => '从未同步';
+
+  @override
+  String koreaderSyncPushedPulled(int pushed, int pulled) {
+    return '已推送 $pushed，已拉取 $pulled';
+  }
+
+  @override
+  String get koreaderServerUrl => '同步服务器';
+
+  @override
+  String get koreaderServerUrlHint => 'https://sync.koreader.rocks';
+
+  @override
+  String get koreaderUsername => '用户名';
+
+  @override
+  String get koreaderPassword => '密码';
+
+  @override
+  String get koreaderPasswordHint => '仅密码的哈希值会发送给服务器';
+
+  @override
+  String get koreaderChecksumMode => '书籍匹配方式';
+
+  @override
+  String get koreaderChecksumPartialMd5 => '按文件内容（推荐）';
+
+  @override
+  String get koreaderChecksumFilename => '按文件名';
+
+  @override
+  String get koreaderChecksumHint => '必须与你的 KOReader 设置一致，否则跨应用进度对不上';
+
+  @override
+  String get koreaderAllowPrivateHttp => '允许私网 / 局域网 HTTP 服务器';
+
+  @override
+  String get koreaderAllowPrivateHttpHint => '仅用于你信任的局域网自建服务器';
+
+  @override
+  String get koreaderTestConnection => '测试连接';
+
+  @override
+  String get koreaderTestSuccess => '连接成功';
+
+  @override
+  String get koreaderRegisterAccount => '注册新账号';
+
+  @override
+  String get koreaderRegisterDescription => '在同步服务器上创建账号';
+
+  @override
+  String get koreaderRegisterSuccess => '账号已注册';
+
+  @override
+  String get koreaderRegisterUsernameTaken => '该用户名已被占用';
+
+  @override
+  String get koreaderSyncOnOpen => '打开时拉取';
+
+  @override
+  String get koreaderSyncOnSave => '保存时推送';
+
+  @override
+  String get koreaderPreferLocalFirstSync => '首次同步时优先保留本地位置';
+
+  @override
+  String get koreaderFidelityNote =>
+      '进度以百分比同步。本应用与 KOReader 的位置度量方式不同，同步后的位置会落在大致正确的地方（通常差一两章以内），不会精确到句子。';
+
+  @override
+  String get koreaderErrorAuthentication => '请检查用户名和密码';
+
+  @override
+  String get koreaderErrorNetwork => '无法连接到同步服务器';
+
+  @override
+  String get koreaderErrorServer => '服务器返回了错误';
+
+  @override
+  String get koreaderErrorInvalidConfiguration => '服务器地址无效';
+
+  @override
+  String get koreaderErrorInsecureConnection => '需要 HTTPS；明文 HTTP 仅允许用于私网服务器';
+
+  @override
+  String get koreaderErrorSecureStorage => '凭据无法安全保存';
+
+  @override
+  String get koreaderErrorLocalFileRequired => '在线书籍无法同步；将书籍文件加入本地后再同步进度';
+
+  @override
+  String get koreaderErrorTimeout => '服务器响应超时';
+
+  @override
+  String get koreaderErrorUnknown => '发生未知错误';
+
+  @override
+  String get opdsCatalogsTitle => 'OPDS 目录';
+
+  @override
+  String get opdsCatalogsSubtitle => '浏览并从在线目录下载书籍';
+
+  @override
+  String get opdsAddCatalog => '添加目录';
+
+  @override
+  String get opdsEditCatalog => '编辑';
+
+  @override
+  String get opdsCatalogUrl => '目录地址';
+
+  @override
+  String get opdsCatalogName => '目录名称';
+
+  @override
+  String get opdsCatalogUsername => '用户名（可选）';
+
+  @override
+  String get opdsCatalogPassword => '密码（可选）';
+
+  @override
+  String get opdsCatalogAllowPrivateHttp => '允许私网 / 局域网 HTTP 服务器';
+
+  @override
+  String get opdsCatalogTest => '测试';
+
+  @override
+  String get opdsCatalogTestSuccess => '目录可访问';
+
+  @override
+  String get opdsCatalogTestFailed => '无法加载该目录';
+
+  @override
+  String get opdsCatalogRemove => '移除';
+
+  @override
+  String get opdsCatalogRemoveConfirm => '移除该目录？';
+
+  @override
+  String get opdsCatalogEmpty => '还没有目录。添加一个以浏览并下载书籍。';
+
+  @override
+  String get opdsBrowseTitle => '浏览';
+
+  @override
+  String get opdsNextPage => '下一页';
+
+  @override
+  String get opdsPreviousPage => '上一页';
+
+  @override
+  String get opdsDownload => '下载';
+
+  @override
+  String get opdsDownloading => '下载中…';
+
+  @override
+  String get opdsDownloadFailed => '下载失败';
+
+  @override
+  String get opdsUnsupportedFormat => '该格式暂不支持导入';
+
+  @override
+  String get opdsNoAcquisition => '没有可下载的文件';
+
+  @override
+  String get opdsLoadFailed => '无法加载该目录';
+
+  @override
+  String get opdsRetry => '重试';
+
+  @override
+  String get opdsUntitled => '未命名';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -8401,4 +8613,216 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get readerNoAnnotationsHint => '選取文字即可高亮或新增文字批註；點擊帶底線的批註文字可再次查看筆記。';
+
+  @override
+  String get koreaderSyncTitle => 'KOReader 進度同步';
+
+  @override
+  String get koreaderSyncSubtitle => '與 KOReader 裝置同步閱讀進度';
+
+  @override
+  String get koreaderSyncBetaBadge => '測試版';
+
+  @override
+  String get koreaderSyncNotConfigured => '未設定';
+
+  @override
+  String get koreaderSyncConfigureSubtitle => '設定 KOReader 同步伺服器';
+
+  @override
+  String get koreaderSyncSetUp => '設定';
+
+  @override
+  String get koreaderSyncNow => '立即同步';
+
+  @override
+  String get koreaderSyncSyncing => '同步中…';
+
+  @override
+  String get koreaderSyncConnected => '已連線';
+
+  @override
+  String get koreaderSyncFailed => '同步失敗';
+
+  @override
+  String koreaderSyncLastSync(String time) {
+    return '上次同步：$time';
+  }
+
+  @override
+  String get koreaderSyncNeverSynced => '從未同步';
+
+  @override
+  String koreaderSyncPushedPulled(int pushed, int pulled) {
+    return '已推送 $pushed，已拉取 $pulled';
+  }
+
+  @override
+  String get koreaderServerUrl => '同步伺服器';
+
+  @override
+  String get koreaderServerUrlHint => 'https://sync.koreader.rocks';
+
+  @override
+  String get koreaderUsername => '使用者名稱';
+
+  @override
+  String get koreaderPassword => '密碼';
+
+  @override
+  String get koreaderPasswordHint => '僅密碼的雜湊值會傳送給伺服器';
+
+  @override
+  String get koreaderChecksumMode => '書籍比對方式';
+
+  @override
+  String get koreaderChecksumPartialMd5 => '依檔案內容（推薦）';
+
+  @override
+  String get koreaderChecksumFilename => '依檔案名稱';
+
+  @override
+  String get koreaderChecksumHint => '必須與你的 KOReader 設定一致，否則跨應用進度對不上';
+
+  @override
+  String get koreaderAllowPrivateHttp => '允許私網 / 區域網路 HTTP 伺服器';
+
+  @override
+  String get koreaderAllowPrivateHttpHint => '僅用於你信任的區域網路自架伺服器';
+
+  @override
+  String get koreaderTestConnection => '測試連線';
+
+  @override
+  String get koreaderTestSuccess => '連線成功';
+
+  @override
+  String get koreaderRegisterAccount => '註冊新帳號';
+
+  @override
+  String get koreaderRegisterDescription => '在同步伺服器上建立帳號';
+
+  @override
+  String get koreaderRegisterSuccess => '帳號已註冊';
+
+  @override
+  String get koreaderRegisterUsernameTaken => '該使用者名稱已被使用';
+
+  @override
+  String get koreaderSyncOnOpen => '開啟時拉取';
+
+  @override
+  String get koreaderSyncOnSave => '儲存時推送';
+
+  @override
+  String get koreaderPreferLocalFirstSync => '首次同步時優先保留本地位置';
+
+  @override
+  String get koreaderFidelityNote =>
+      '進度以百分比同步。本應用與 KOReader 的位置度量方式不同，同步後的位置會落在大致正確的地方（通常差一兩章以內），不會精確到句子。';
+
+  @override
+  String get koreaderErrorAuthentication => '請檢查使用者名稱和密碼';
+
+  @override
+  String get koreaderErrorNetwork => '無法連線到同步伺服器';
+
+  @override
+  String get koreaderErrorServer => '伺服器傳回了錯誤';
+
+  @override
+  String get koreaderErrorInvalidConfiguration => '伺服器地址無效';
+
+  @override
+  String get koreaderErrorInsecureConnection => '需要 HTTPS；明文 HTTP 僅允許用於私網伺服器';
+
+  @override
+  String get koreaderErrorSecureStorage => '憑證無法安全儲存';
+
+  @override
+  String get koreaderErrorLocalFileRequired => '線上書籍無法同步；將書籍檔案加入本地後再同步進度';
+
+  @override
+  String get koreaderErrorTimeout => '伺服器回應逾時';
+
+  @override
+  String get koreaderErrorUnknown => '發生未知錯誤';
+
+  @override
+  String get opdsCatalogsTitle => 'OPDS 目錄';
+
+  @override
+  String get opdsCatalogsSubtitle => '瀏覽並從線上目錄下載書籍';
+
+  @override
+  String get opdsAddCatalog => '新增目錄';
+
+  @override
+  String get opdsEditCatalog => '編輯';
+
+  @override
+  String get opdsCatalogUrl => '目錄地址';
+
+  @override
+  String get opdsCatalogName => '目錄名稱';
+
+  @override
+  String get opdsCatalogUsername => '使用者名稱（選填）';
+
+  @override
+  String get opdsCatalogPassword => '密碼（選填）';
+
+  @override
+  String get opdsCatalogAllowPrivateHttp => '允許私網 / 區域網路 HTTP 伺服器';
+
+  @override
+  String get opdsCatalogTest => '測試';
+
+  @override
+  String get opdsCatalogTestSuccess => '目錄可存取';
+
+  @override
+  String get opdsCatalogTestFailed => '無法載入該目錄';
+
+  @override
+  String get opdsCatalogRemove => '移除';
+
+  @override
+  String get opdsCatalogRemoveConfirm => '移除該目錄？';
+
+  @override
+  String get opdsCatalogEmpty => '還沒有目錄。新增一個以瀏覽並下載書籍。';
+
+  @override
+  String get opdsBrowseTitle => '瀏覽';
+
+  @override
+  String get opdsNextPage => '下一頁';
+
+  @override
+  String get opdsPreviousPage => '上一頁';
+
+  @override
+  String get opdsDownload => '下載';
+
+  @override
+  String get opdsDownloading => '下載中…';
+
+  @override
+  String get opdsDownloadFailed => '下載失敗';
+
+  @override
+  String get opdsUnsupportedFormat => '該格式暫不支援匯入';
+
+  @override
+  String get opdsNoAcquisition => '沒有可下載的檔案';
+
+  @override
+  String get opdsLoadFailed => '無法載入該目錄';
+
+  @override
+  String get opdsRetry => '重試';
+
+  @override
+  String get opdsUntitled => '未命名';
 }
